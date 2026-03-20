@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Triángulo - DDA / Bresenham</title>
+<!-- nombre que sale en la pestaña -->
+
+<!-- MEJORA: estilo para resaltar el botón activo -->
+<style>
+  .activo {
+    background-color: #333;
+    color: white;
+    font-weight: bold;
+  }
+</style>
+
+</head>
+<body style="font-family:monospace;text-align:center;padding:20px">
+<!-- estilo básico de la página -->
+<h3>Trazado de Triángulo</h3>
+<!-- título -->
+<!-- botones para escoger el algoritmo -->
+<button onclick="setMetodo('DDA', event)">DDA</button>
+<button onclick="setMetodo('Bresenham', event)">Bresenham</button>
+&nbsp;
+Grosor:
+<!-- tamaño del punto que se dibuja -->
+<input id="grosor" type="number" value="2" min="1" style="width:50px">
+<!-- donde se escribe el grosor -->
+<br><br>
+<!-- tabla para poner las coordenadas -->
+<table style="margin:auto;border-spacing:8px">
+<tr>
+<th></th>
+<th>X</th>
+<th>Y</th>
+</tr>
+<tr>
+<td>P1</td>
+<!-- primer punto — MEJORA: valores por defecto -->
+<td><input id="x1" type="number" value="250"></td>
+<td><input id="y1" type="number" value="400"></td>
+</tr>
+<tr>
+<td>P2</td>
+<!-- segundo punto — MEJORA: valores por defecto -->
+<td><input id="x2" type="number" value="100"></td>
+<td><input id="y2" type="number" value="100"></td>
+</tr>
+<tr>
+<td>P3</td>
+<!-- tercer punto — MEJORA: valores por defecto -->
+<td><input id="x3" type="number" value="450"></td>
+<td><input id="y3" type="number" value="100"></td>
+</tr>
+</table>
+<br>
+<!-- botón para dibujar -->
+<button onclick="dibujar()">Dibujar</button>
+<!-- botón para borrar el dibujo -->
+<button onclick="limpiar()">Limpiar</button>
+<!-- aparece el mensaje -->
+<div id="mensaje" style="margin:10px;font-weight:bold"></div>
+<!-- se dibuja el triángulo -->
+<canvas id="canvas" width="600" height="500" style="border:1px solid gray"></canvas>
+
+<!-- conecta el archivo javascript -->
+<script src="20-mar.js"></script>
+</body>
+</html>
+
+

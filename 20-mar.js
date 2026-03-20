@@ -100,50 +100,60 @@ function esTriangulo(x1, y1, x2, y2, x3, y3){
     return (x2 - x1)*(y3 - y1) !== (y2 - y1)*(x3 - x1);
 }
 
-// dibuja ejes con numeros para saber las posiciones
-// el origen esta en la esquina inferior izquierda con un margen
-// los numeros y la cuadricula se ajustan segun la escala calculada
+// OPTIMIZACIÓN: Se redujeron cálculos repetidos dentro de los bucles, se precalcularon límites y dimensiones del canvas y se simplificaron operaciones para mejorar el rendimiento al dibujar la cuadrícula.
 function dibujarEjes(x1, y1, x2, y2, x3, y3){
-    let maxVal = Math.max(x1, x2, x3, y1, y2, y3);
+    const maxVal = Math.max(x1, x2, x3, y1, y2, y3);
+    const limite = maxVal * 1.1;
 
-    // intervalo de cuadricula: se ajusta para que haya entre 4 y 8 divisiones
     let intervalo = Math.pow(10, Math.floor(Math.log10(maxVal)));
     if(maxVal / intervalo < 4) intervalo /= 2;
 
-    // cuadricula de fondo
     ctx.strokeStyle = "#e0e0e0";
     ctx.lineWidth = 0.3;
-    for(let v = 0; v <= maxVal * 1.1; v += intervalo){
-        let px = MARGEN + v * escala;
-        let py = (canvas.height - MARGEN) - v * escala;
-        ctx.beginPath(); ctx.moveTo(px, 0); ctx.lineTo(px, canvas.height - MARGEN); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(MARGEN, py); ctx.lineTo(canvas.width, py); ctx.stroke();
+
+    // precalcular limites en pixeles
+    const width = canvas.width;
+    const height = canvas.height;
+    const baseY = height - MARGEN;
+
+    for(let v = 0; v <= limite; v += intervalo){
+        const px = MARGEN + v * escala;
+        const py = baseY - v * escala;
+
+        ctx.beginPath();
+        ctx.moveTo(px, 0);
+        ctx.lineTo(px, baseY);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(MARGEN, py);
+        ctx.lineTo(width, py);
+        ctx.stroke();
     }
 
     // ejes principales
     ctx.strokeStyle = "#000";
     ctx.lineWidth = 1;
+
     ctx.beginPath();
-    ctx.moveTo(MARGEN, canvas.height - MARGEN);
-    ctx.lineTo(canvas.width, canvas.height - MARGEN);
+    ctx.moveTo(MARGEN, baseY);
+    ctx.lineTo(width, baseY);
     ctx.moveTo(MARGEN, 0);
-    ctx.lineTo(MARGEN, canvas.height - MARGEN);
+    ctx.lineTo(MARGEN, baseY);
     ctx.stroke();
 
     ctx.fillStyle = "#000";
     ctx.font = "10px monospace";
 
-    // numeros eje X
     ctx.textAlign = "center";
-    for(let v = 0; v <= maxVal * 1.1; v += intervalo){
-        let px = MARGEN + v * escala;
-        ctx.fillText(v, px, canvas.height - MARGEN + 12);
+    for(let v = 0; v <= limite; v += intervalo){
+        const px = MARGEN + v * escala;
+        ctx.fillText(v, px, baseY + 12);
     }
 
-    // numeros eje Y
     ctx.textAlign = "right";
-    for(let v = 0; v <= maxVal * 1.1; v += intervalo){
-        let py = (canvas.height - MARGEN) - v * escala;
+    for(let v = 0; v <= limite; v += intervalo){
+        const py = baseY - v * escala;
         ctx.fillText(v, MARGEN - 4, py + 3);
     }
 }

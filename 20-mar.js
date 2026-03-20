@@ -165,15 +165,12 @@ function dibujarEjes(x1, y1, x2, y2, x3, y3){
     }
 }
 
-// OPTIMIZACIÓN: Se simplificó la obtención de valores del DOM usando conversión directa
-// Reduciendo el uso de parseInt y mejorando la eficiencia en la función principal.
+// OPTIMIZACIÓN: Se ajustó la medición de tiempo para evaluar únicamente el rendimiento del algoritmo de dibujo
+// Excluyendo operaciones como renderizado de ejes y limpieza del canvas.
 function dibujar(){
-
-    const t0 = performance.now();
 
     limpiar();
 
-    // cachear elementos del DOM (más rápido)
     const x1 = +document.getElementById("x1").value;
     const y1 = +document.getElementById("y1").value;
     const x2 = +document.getElementById("x2").value;
@@ -191,13 +188,16 @@ function dibujar(){
         return;
     }
 
+    // 🔴 SOLO medimos el dibujo
+    const t0 = performance.now();
+
     drawLine(x1, y1, x2, y2, size, metodo);
     drawLine(x2, y2, x3, y3, size, metodo);
     drawLine(x3, y3, x1, y1, size, metodo);
 
     const t1 = performance.now();
 
-    mensaje.innerText = `Tiempo: ${(t1 - t0).toFixed(4)} ms`;
+    mensaje.innerText = `Tiempo algoritmo: ${(t1 - t0).toFixed(4)} ms`;
 }
 // limpia el canvas
 function limpiar(){

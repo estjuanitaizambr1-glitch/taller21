@@ -41,7 +41,8 @@ function calcularEscala(x1, y1, x2, y2, x3, y3){
     return Math.min(escX, escY);      
 }
 
-// OPTIMIZACIÓN: Se eliminaron cálculos innecesarios (dx, dy), se usa desestructuración para mayor claridad y se selecciona el algoritmo dinámicamente para simplificar el código.
+// OPTIMIZACIÓN: Se eliminaron cálculos innecesarios (dx, dy)
+// Se usa desestructuración para mayor claridad y se selecciona el algoritmo dinámicamente para simplificar el código.
 function drawLine(x1, y1, x2, y2, size, method){
     // convertir coordenadas
     const [x1c, y1c] = canvasToCartesiana({x: x1, y: y1}, canvas.height);
@@ -52,25 +53,27 @@ function drawLine(x1, y1, x2, y2, size, method){
 
     algoritmo(x1c, y1c, x2c, y2c, size);
 }
-}
 
-// algoritmo DDA
-// se basa en avanzar poco a poco usando incrementos
-function drawDDA(x1,y1,x2,y2,size){
-    let dx = x2-x1;
-    let dy = y2-y1;
-    let pasos = Math.max(Math.abs(dx),Math.abs(dy));
-    let xinc = dx/pasos;
-    let yinc = dy/pasos;
+
+// OPTIMIZACIÓN: Se reemplazó Math.round por una operación bit a bit para reducir el costo dentro del bucle
+// Mejorando el rendimiento en el trazado de líneas.
+function drawDDA(x1, y1, x2, y2, size){
+    let dx = x2 - x1;
+    let dy = y2 - y1;
+    let pasos = Math.max(Math.abs(dx), Math.abs(dy));
+
+    let xinc = dx / pasos;
+    let yinc = dy / pasos;
+
     let x = x1;
     let y = y1;
-    for(let i=0;i<=pasos;i++){
-        drawPoint(ctx,Math.round(x),Math.round(y),size);
+
+    for(let i = 0; i <= pasos; i++){
+        drawPoint(ctx, x|0, y|0, size); // más rápido que Math.round
         x += xinc;
         y += yinc;
     }
 }
-
 // algoritmo Bresenham
 // usa un error para decidir cuando mover el pixel
 function drawBresenham(x1,y1,x2,y2,size){
@@ -94,13 +97,15 @@ function drawBresenham(x1,y1,x2,y2,size){
     }
 }
 
-// OPTIMIZACIÓN: Se reemplazó el cálculo de pendientes por una comparación usando determinante, eliminando divisiones y simplificando la lógica para mejorar el rendimiento y la precisión.
+// OPTIMIZACIÓN: Se reemplazó el cálculo de pendientes por una comparación usando determinante
+// Se eliminan divisiones y se simplifica la lógica para mejorar el rendimiento y la precisión.
 function esTriangulo(x1, y1, x2, y2, x3, y3){
     // usando determinante (producto cruzado)
     return (x2 - x1)*(y3 - y1) !== (y2 - y1)*(x3 - x1);
 }
 
-// OPTIMIZACIÓN: Se redujeron cálculos repetidos dentro de los bucles, se precalcularon límites y dimensiones del canvas y se simplificaron operaciones para mejorar el rendimiento al dibujar la cuadrícula.
+// OPTIMIZACIÓN: Se redujeron cálculos repetidos dentro de los bucles
+// Se precalcularon límites y dimensiones del canvas y se simplificaron operaciones para mejorar el rendimiento al dibujar la cuadrícula.
 function dibujarEjes(x1, y1, x2, y2, x3, y3){
     const maxVal = Math.max(x1, x2, x3, y1, y2, y3);
     const limite = maxVal * 1.1;
